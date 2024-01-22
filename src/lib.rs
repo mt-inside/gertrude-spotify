@@ -9,17 +9,15 @@ impl plugin::Plugin for Plugin {
     //Need an API key to call spotify: https://developer.spotify.com/documentation/web-api
 
     // TODO: returning Vecs gives out-of-bound string read errors
-    fn handle_privmsg(msg: String) -> String {
-        let mut ret = "".to_owned();
-
-        if let Ok(u) = Url::parse(&msg) {
+    fn handle_privmsg(msgs: Vec<String>) -> Option<String> {
+        if let Ok(u) = Url::parse(&msgs[msgs.len() - 1]) {
             if u.host_str() == Some("open.spotify.com") {
                 let segs = u.path_segments().unwrap().collect::<Vec<&str>>();
 
-                ret = format!("Artist: {}; {}: {}", segs[1], segs[0], "foo");
+                return Some(format!("Artist: {}; {}: {}", segs[1], segs[0], "foo"));
             }
         }
 
-        ret
+        None
     }
 }
